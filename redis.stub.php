@@ -98,6 +98,14 @@ class Redis {
     /**
      *
      * @var int
+     * @cvalue REDIS_OPT_IGBINARY_NO_STRINGS
+     *
+     */
+    public const OPT_IGBINARY_NO_STRINGS = UNKNOWN;
+
+    /**
+     *
+     * @var int
      * @cvalue REDIS_OPT_PREFIX
      *
      */
@@ -142,6 +150,18 @@ class Redis {
      *
      */
     public const OPT_COMPRESSION_LEVEL = UNKNOWN;
+
+    /**
+     * @var int
+     * @cvalue REDIS_OPT_COMPRESSION_MIN_SIZE
+     */
+    public const OPT_COMPRESSION_MIN_SIZE = UNKNOWN;
+
+    /**
+     * @var float
+     * @cvalue REDIS_OPT_COMPRESSION_MIN_RATIO
+     */
+    public const OPT_COMPRESSION_MIN_RATIO = UNKNOWN;
 
     /**
      *

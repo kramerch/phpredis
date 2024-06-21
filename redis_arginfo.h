@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 8cf0ecc2f5a43c6ede68d537a76faa23cb912d96 */
+ * Stub hash: 40d58087dba80be2619753f5fd1d861e20339544 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_Redis___construct, 0, 0, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, options, IS_ARRAY, 1, "null")
@@ -588,17 +588,9 @@ ZEND_BEGIN_ARG_WITH_RETURN_OBJ_TYPE_MASK_EX(arginfo_class_Redis_object, 0, 2, Re
 	ZEND_ARG_TYPE_INFO(0, key, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Redis_open, 0, 1, _IS_BOOL, 0)
-	ZEND_ARG_TYPE_INFO(0, host, IS_STRING, 0)
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, port, IS_LONG, 0, "6379")
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, timeout, IS_DOUBLE, 0, "0")
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, persistent_id, IS_STRING, 1, "null")
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, retry_interval, IS_LONG, 0, "0")
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, read_timeout, IS_DOUBLE, 0, "0")
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, context, IS_ARRAY, 1, "null")
-ZEND_END_ARG_INFO()
+#define arginfo_class_Redis_open arginfo_class_Redis_connect
 
-#define arginfo_class_Redis_pconnect arginfo_class_Redis_open
+#define arginfo_class_Redis_pconnect arginfo_class_Redis_connect
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_TYPE_MASK_EX(arginfo_class_Redis_persist, 0, 1, Redis, MAY_BE_BOOL)
 	ZEND_ARG_TYPE_INFO(0, key, IS_STRING, 0)
@@ -633,7 +625,7 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_TYPE_MASK_EX(arginfo_class_Redis_pipeline, 0, 0, Redis, MAY_BE_BOOL)
 ZEND_END_ARG_INFO()
 
-#define arginfo_class_Redis_popen arginfo_class_Redis_open
+#define arginfo_class_Redis_popen arginfo_class_Redis_connect
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_TYPE_MASK_EX(arginfo_class_Redis_psetex, 0, 3, Redis, MAY_BE_BOOL)
 	ZEND_ARG_TYPE_INFO(0, key, IS_STRING, 0)
@@ -1155,12 +1147,7 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_Redis_zunion arginfo_class_Redis_zinter
 
-ZEND_BEGIN_ARG_WITH_RETURN_OBJ_TYPE_MASK_EX(arginfo_class_Redis_zunionstore, 0, 2, Redis, MAY_BE_LONG|MAY_BE_FALSE)
-	ZEND_ARG_TYPE_INFO(0, dst, IS_STRING, 0)
-	ZEND_ARG_TYPE_INFO(0, keys, IS_ARRAY, 0)
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, weights, IS_ARRAY, 1, "null")
-	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, aggregate, IS_STRING, 1, "null")
-ZEND_END_ARG_INFO()
+#define arginfo_class_Redis_zunionstore arginfo_class_Redis_zinterstore
 
 
 ZEND_METHOD(Redis, __construct);
@@ -1752,6 +1739,12 @@ static zend_class_entry *register_class_Redis(void)
 	zend_declare_class_constant_ex(class_entry, const_OPT_SERIALIZER_name, &const_OPT_SERIALIZER_value, ZEND_ACC_PUBLIC, NULL);
 	zend_string_release(const_OPT_SERIALIZER_name);
 
+	zval const_OPT_IGBINARY_NO_STRINGS_value;
+	ZVAL_LONG(&const_OPT_IGBINARY_NO_STRINGS_value, REDIS_OPT_IGBINARY_NO_STRINGS);
+	zend_string *const_OPT_IGBINARY_NO_STRINGS_name = zend_string_init_interned("OPT_IGBINARY_NO_STRINGS", sizeof("OPT_IGBINARY_NO_STRINGS") - 1, 1);
+	zend_declare_class_constant_ex(class_entry, const_OPT_IGBINARY_NO_STRINGS_name, &const_OPT_IGBINARY_NO_STRINGS_value, ZEND_ACC_PUBLIC, NULL);
+	zend_string_release(const_OPT_IGBINARY_NO_STRINGS_name);
+
 	zval const_OPT_PREFIX_value;
 	ZVAL_LONG(&const_OPT_PREFIX_value, REDIS_OPT_PREFIX);
 	zend_string *const_OPT_PREFIX_name = zend_string_init_interned("OPT_PREFIX", sizeof("OPT_PREFIX") - 1, 1);
@@ -1787,6 +1780,18 @@ static zend_class_entry *register_class_Redis(void)
 	zend_string *const_OPT_COMPRESSION_LEVEL_name = zend_string_init_interned("OPT_COMPRESSION_LEVEL", sizeof("OPT_COMPRESSION_LEVEL") - 1, 1);
 	zend_declare_class_constant_ex(class_entry, const_OPT_COMPRESSION_LEVEL_name, &const_OPT_COMPRESSION_LEVEL_value, ZEND_ACC_PUBLIC, NULL);
 	zend_string_release(const_OPT_COMPRESSION_LEVEL_name);
+
+	zval const_OPT_COMPRESSION_MIN_SIZE_value;
+	ZVAL_LONG(&const_OPT_COMPRESSION_MIN_SIZE_value, REDIS_OPT_COMPRESSION_MIN_SIZE);
+	zend_string *const_OPT_COMPRESSION_MIN_SIZE_name = zend_string_init_interned("OPT_COMPRESSION_MIN_SIZE", sizeof("OPT_COMPRESSION_MIN_SIZE") - 1, 1);
+	zend_declare_class_constant_ex(class_entry, const_OPT_COMPRESSION_MIN_SIZE_name, &const_OPT_COMPRESSION_MIN_SIZE_value, ZEND_ACC_PUBLIC, NULL);
+	zend_string_release(const_OPT_COMPRESSION_MIN_SIZE_name);
+
+	zval const_OPT_COMPRESSION_MIN_RATIO_value;
+	ZVAL_DOUBLE(&const_OPT_COMPRESSION_MIN_RATIO_value, REDIS_OPT_COMPRESSION_MIN_RATIO);
+	zend_string *const_OPT_COMPRESSION_MIN_RATIO_name = zend_string_init_interned("OPT_COMPRESSION_MIN_RATIO", sizeof("OPT_COMPRESSION_MIN_RATIO") - 1, 1);
+	zend_declare_class_constant_ex(class_entry, const_OPT_COMPRESSION_MIN_RATIO_name, &const_OPT_COMPRESSION_MIN_RATIO_value, ZEND_ACC_PUBLIC, NULL);
+	zend_string_release(const_OPT_COMPRESSION_MIN_RATIO_name);
 
 	zval const_OPT_NULL_MULTIBULK_AS_NULL_value;
 	ZVAL_LONG(&const_OPT_NULL_MULTIBULK_AS_NULL_value, REDIS_OPT_NULL_MBULK_AS_NULL);
