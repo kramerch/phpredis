@@ -2873,6 +2873,7 @@ redis_sock_create(char *host, int host_len, int port,
     redis_sock->serializer = REDIS_SERIALIZER_NONE;
     redis_sock->compression = REDIS_COMPRESSION_NONE;
     redis_sock->mode = ATOMIC;
+    redis_sock->compression_min_size = -1;
 
     return redis_sock;
 }
@@ -3783,8 +3784,11 @@ redis_uncompress(RedisSock *redis_sock, char **dst, size_t *dstlen, const char *
                 unsigned long long zlen;
 
                 zlen = ZSTD_getFrameContentSize(src, len);
-                if (zlen == ZSTD_CONTENTSIZE_ERROR || zlen == ZSTD_CONTENTSIZE_UNKNOWN || zlen > INT_MAX)
+                if (zlen == ZSTD_CONTENTSIZE_ERROR || zlen == ZSTD_CONTENTSIZE_UNKNOWN || zlen > INT_MAX
+                    || (zlen == 0 && (redis_sock->compression_min_ratio > 0 || redis_sock->compression_min_size > 0)))
+                {
                     break;
+                }
 
                 data = emalloc(zlen);
                 *dstlen = ZSTD_decompress(data, zlen, src, len);
@@ -3821,8 +3825,29 @@ redis_uncompress(RedisSock *redis_sock, char **dst, size_t *dstlen, const char *
                 copy += sizeof(int); copylen -= sizeof(int);
 
                 /* Make sure our CRC matches (TODO:  Maybe issue a docref error?) */
-                if (crc8((unsigned char*)&datalen, sizeof(datalen)) != lz4crc)
-                    break;
+                if (crc8((unsigned char*)&datalen, sizeof(datalen)) != lz4crc) {
+                    // Gubagoo Exclusive:
+                    // If the leading byte is '\4', it means it could have been
+                    // written by our custom PHP 7.4 phpredis fork.
+                    // Try running the crc check again and count it as success
+                    // if it passes by skipping over the first byte.
+                    if (*src == '\4') {
+                        copy = src + 1;
+                        copylen = len - 1;
+
+                        /* Read in our header bytes */
+                        memcpy(&lz4crc, copy, sizeof(uint8_t));
+                        copy += sizeof(uint8_t); copylen -= sizeof(uint8_t);
+                        memcpy(&datalen, copy, sizeof(int));
+                        copy += sizeof(int); copylen -= sizeof(int);
+
+                        if (crc8((unsigned char*)&datalen, sizeof(datalen)) != lz4crc) {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
 
                 /* Finally attempt decompression */
                 data = emalloc(datalen);
@@ -3995,6 +4020,11 @@ redis_unserialize(RedisSock* redis_sock, const char *val, int val_len,
 
         case REDIS_SERIALIZER_IGBINARY:
 #ifdef HAVE_REDIS_IGBINARY
+            if (*val != '\0' && redis_sock->no_strings) {
+                ZVAL_STRINGL(z_ret, val, val_len);
+                ret = 1;
+                break;
+            }
             /*
              * Check if the given string starts with an igbinary header.
              *

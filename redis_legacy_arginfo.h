@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 8cf0ecc2f5a43c6ede68d537a76faa23cb912d96 */
+ * Stub hash: 40d58087dba80be2619753f5fd1d861e20339544 */
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_class_Redis___construct, 0, 0, 0)
 	ZEND_ARG_INFO(0, options)
@@ -1594,6 +1594,12 @@ static zend_class_entry *register_class_Redis(void)
 	zend_declare_class_constant_ex(class_entry, const_OPT_SERIALIZER_name, &const_OPT_SERIALIZER_value, ZEND_ACC_PUBLIC, NULL);
 	zend_string_release(const_OPT_SERIALIZER_name);
 
+	zval const_OPT_IGBINARY_NO_STRINGS_value;
+	ZVAL_LONG(&const_OPT_IGBINARY_NO_STRINGS_value, REDIS_OPT_IGBINARY_NO_STRINGS);
+	zend_string *const_OPT_IGBINARY_NO_STRINGS_name = zend_string_init_interned("OPT_IGBINARY_NO_STRINGS", sizeof("OPT_IGBINARY_NO_STRINGS") - 1, 1);
+	zend_declare_class_constant_ex(class_entry, const_OPT_IGBINARY_NO_STRINGS_name, &const_OPT_IGBINARY_NO_STRINGS_value, ZEND_ACC_PUBLIC, NULL);
+	zend_string_release(const_OPT_IGBINARY_NO_STRINGS_name);
+
 	zval const_OPT_PREFIX_value;
 	ZVAL_LONG(&const_OPT_PREFIX_value, REDIS_OPT_PREFIX);
 	zend_string *const_OPT_PREFIX_name = zend_string_init_interned("OPT_PREFIX", sizeof("OPT_PREFIX") - 1, 1);
@@ -1629,6 +1635,18 @@ static zend_class_entry *register_class_Redis(void)
 	zend_string *const_OPT_COMPRESSION_LEVEL_name = zend_string_init_interned("OPT_COMPRESSION_LEVEL", sizeof("OPT_COMPRESSION_LEVEL") - 1, 1);
 	zend_declare_class_constant_ex(class_entry, const_OPT_COMPRESSION_LEVEL_name, &const_OPT_COMPRESSION_LEVEL_value, ZEND_ACC_PUBLIC, NULL);
 	zend_string_release(const_OPT_COMPRESSION_LEVEL_name);
+
+	zval const_OPT_COMPRESSION_MIN_SIZE_value;
+	ZVAL_LONG(&const_OPT_COMPRESSION_MIN_SIZE_value, REDIS_OPT_COMPRESSION_MIN_SIZE);
+	zend_string *const_OPT_COMPRESSION_MIN_SIZE_name = zend_string_init_interned("OPT_COMPRESSION_MIN_SIZE", sizeof("OPT_COMPRESSION_MIN_SIZE") - 1, 1);
+	zend_declare_class_constant_ex(class_entry, const_OPT_COMPRESSION_MIN_SIZE_name, &const_OPT_COMPRESSION_MIN_SIZE_value, ZEND_ACC_PUBLIC, NULL);
+	zend_string_release(const_OPT_COMPRESSION_MIN_SIZE_name);
+
+	zval const_OPT_COMPRESSION_MIN_RATIO_value;
+	ZVAL_DOUBLE(&const_OPT_COMPRESSION_MIN_RATIO_value, REDIS_OPT_COMPRESSION_MIN_RATIO);
+	zend_string *const_OPT_COMPRESSION_MIN_RATIO_name = zend_string_init_interned("OPT_COMPRESSION_MIN_RATIO", sizeof("OPT_COMPRESSION_MIN_RATIO") - 1, 1);
+	zend_declare_class_constant_ex(class_entry, const_OPT_COMPRESSION_MIN_RATIO_name, &const_OPT_COMPRESSION_MIN_RATIO_value, ZEND_ACC_PUBLIC, NULL);
+	zend_string_release(const_OPT_COMPRESSION_MIN_RATIO_name);
 
 	zval const_OPT_NULL_MULTIBULK_AS_NULL_value;
 	ZVAL_LONG(&const_OPT_NULL_MULTIBULK_AS_NULL_value, REDIS_OPT_NULL_MBULK_AS_NULL);
