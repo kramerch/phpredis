@@ -3641,19 +3641,8 @@ static uint8_t crc8(unsigned char *input, size_t len) {
 }
 #endif
 
-
-
-#define PHP_REDIS_COMPRESSION_RATIO_CHECK(__x) \
-    (redis_sock->compression_min_ratio > 0 && (((double) __x / (double) len) >= redis_sock->compression_min_ratio))
-
 PHP_REDIS_API int
 redis_compress(RedisSock *redis_sock, char **dst, size_t *dstlen, char *buf, size_t len) {
-    if (redis_sock->compression_min_size > 0 && redis_sock->compression_min_size >= len) {
-        *dst = buf;
-        *dstlen = len;
-        return 0;
-    }
-
     switch (redis_sock->compression) {
         case REDIS_COMPRESSION_LZF:
 #ifdef HAVE_REDIS_LZF
@@ -3666,10 +3655,6 @@ redis_compress(RedisSock *redis_sock, char **dst, size_t *dstlen, char *buf, siz
                 size = len + MIN(UINT_MAX - len, MAX(LZF_MARGIN, len / 25));
                 data = emalloc(size);
                 if ((res = lzf_compress(buf, len, data, size)) > 0) {
-                    if (PHP_REDIS_COMPRESSION_RATIO_CHECK(res)) {
-                        efree(data);
-                        break;
-                    }
                     *dst = data;
                     *dstlen = res;
                     return 1;
@@ -3700,7 +3685,7 @@ redis_compress(RedisSock *redis_sock, char **dst, size_t *dstlen, char *buf, siz
                 size = ZSTD_compressBound(len);
                 data = emalloc(size);
                 size = ZSTD_compress(data, size, buf, len, level);
-                if (!ZSTD_isError(size) && !PHP_REDIS_COMPRESSION_RATIO_CHECK(size)) {
+                if (!ZSTD_isError(size)) {
                     *dst = erealloc(data, size);
                     *dstlen = size;
                     return 1;
@@ -3745,7 +3730,7 @@ redis_compress(RedisSock *redis_sock, char **dst, size_t *dstlen, char *buf, siz
                     lz4len = LZ4_compress_HC(buf, lz4pos, old_len, lz4bound, redis_sock->compression_level);
                 }
 
-                if (lz4len <= 0 || PHP_REDIS_COMPRESSION_RATIO_CHECK(lz4len)) {
+                if (lz4len <= 0) {
                     efree(lz4buf);
                     break;
                 }
@@ -3983,11 +3968,6 @@ redis_serialize(RedisSock *redis_sock, zval *z, char **val, size_t *val_len)
             break;
         case REDIS_SERIALIZER_IGBINARY:
 #ifdef HAVE_REDIS_IGBINARY
-            if(Z_TYPE_P(z) == IS_STRING && redis_sock->no_strings) {
-                *val = Z_STRVAL_P(z);
-                *val_len = Z_STRLEN_P(z);
-                return 0;
-            }
             if(igbinary_serialize(&val8, (size_t *)&sz, z) == 0) {
                 *val = (char*)val8;
                 *val_len = sz;
